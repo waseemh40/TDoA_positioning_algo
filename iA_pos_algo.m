@@ -36,16 +36,19 @@ function [x,y,z]=iA_pos_algo(depth,timestamp_matrix,station_data)
     R_ac=v*(T_a-T_c);
     if R_ab ==0
         if R_ac ==0
-            x=100*20;
+            y_projection=sqrt((T_c*v)^2-(depth_hydrophone-depth)^2);
+            y=100*(cy-y_projection);
+            x=100*b/2;
             z=100*depth;
-            y=100*(cy-T_c*v);
             disp('Btoh R_ab abd R_ac are zero');
             return 
         else
             x=100*b/2;
             z=100*depth;
             %solve for y
-            y=100*(cy-T_c*v);
+            y_projection=sqrt((T_c*v)^2-(depth_hydrophone-depth)^2);
+            y=100*(cy-y_projection);
+            disp('R_ab is zero');
             return
         end
     end

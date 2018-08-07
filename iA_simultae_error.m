@@ -1,16 +1,16 @@
 function iA_simultae_error
 
     close all
-    resolution=1;
+    resolution=0.5;
     lower_limit_x=-5;
     upper_limit_x=47;
     lower_limit_y=-15;
     upper_limit_y=40;
         %to check a specific range for error
-    lower_limit_x=2;
-    upper_limit_x=45;
-    lower_limit_y=-10;
-    upper_limit_y=35;
+%     lower_limit_x=2;
+%     upper_limit_x=45;
+%     lower_limit_y=-10;
+%     upper_limit_y=35;
 
     samples_x=fix((upper_limit_x-lower_limit_x)/resolution);
     samples_y=fix((upper_limit_y-lower_limit_y)/resolution);
@@ -82,7 +82,6 @@ function iA_simultae_error
     for outer_loop_var=1:calc_coord_matrix_index-1
         x_p(1,outer_loop_var)=    coord_calc(1,1,outer_loop_var);
         y_p(1,outer_loop_var)=    coord_calc(2,1,outer_loop_var);
-        outer_loop_var
     end
     plot(x_p(1,:),y_p(1,:),'ro');
     for outer_loop_var=1:samples_sqr
