@@ -34,37 +34,89 @@ function [x,y,z]=iA_pos_algo(depth,timestamp_matrix,station_data)
     T_c=sec_c+(msec_c/1000);
     R_ab=v*(T_a-T_b);
     R_ac=v*(T_a-T_c);
+%     if R_ab ==0
+%         if R_ac ==0
+%             x=100*b/2;
+%             z=100*depth;
+%             disp('Both R_ab abd R_ac are zero');
+%             %solve for y
+%             y_projection=sqrt(((msec_c/1000)*v)^2-(depth_hydrophone-depth)^2);    %changed from T_c
+%             y=100*(cy-y_projection);
+%             y=100*12.46;
+%             if  ~(isreal(x)) || ~(isreal(y)) 
+%                 x=abs(x);
+%                 y=abs(y);
+%                 %disp('Y is imaginary');
+%             end
+%             if  (abs(y)>100*cy) 
+%                 y=cy/2;
+%                 disp('Setting y to cy/2');
+%             end
+%             return 
+%         else
+%             x=100*b/2;
+%             z=100*depth;
+%             %solve for y
+%             term=(R_ac^2-c^2+2*cx*b/2);
+%             %calculate x
+%             a=(2*cy^2)-(4*R_ac^2*(b/2)^2);          %y^2
+%             b=(4*cy*term);                          %y
+%             c=term^2-(4*R_ac^2*((b/2)^2+depth^2));  %const.
+%             p=[a b c];
+%             y_mat=roots(p);
+%             y_projection=sqrt(((msec_c/1000)*v)^2-(depth_hydrophone-depth)^2);    %changed from T_c
+%             y=100*(cy-y_projection);
+%             y=100*12.46;
+%             disp('R_ab is zero');
+%             if  ~(isreal(x)) || ~(isreal(y)) 
+%                 x=abs(x);
+%                 y=abs(y);
+%                 %disp('Y is imaginary');
+%             end
+%             if  (abs(y)>100*cy) 
+%                 y=cy/2;
+%                 disp('Setting y to cy/2');
+%             end
+%             return
+%         end
+%     end
+disp('New iteration')
     if R_ab ==0
-        if R_ac ==0
-            y_projection=sqrt((T_c*v)^2-(depth_hydrophone-depth)^2);
-            y=100*(cy-y_projection);
-            x=100*b/2;
+       if R_ac ==0
+            x=100*(b/2);
             z=100*depth;
-            disp('Btoh R_ab abd R_ac are zero');
+            y=100*(-((cx*b)/(cy*2))+(c^2/(2*cy)));
+            disp('Both R_ab abd R_ac are zero');
             return 
-        else
-            x=100*b/2;
-            z=100*depth;
+       else
+            x_mat(1,1)=b/2;     %equal rooots
+            x_mat(2,1)=b/2;     %equal roots
+            z_m=depth;
             %solve for y
-            y_projection=sqrt((T_c*v)^2-(depth_hydrophone-depth)^2);
-            y=100*(cy-y_projection);
+            term=(R_ac^2-c^2+(2*cx*(b/2)));
+            %make quadratric equation
+            a=(4*cy^2)-(4*R_ac^2);                  %y^2
+            b=(4*cy*term);                          %y
+            c=term^2-(4*R_ac^2*((b/2)^2+depth^2));  %const.
+            p=[a b c];
+            y_mat=roots(p);
             disp('R_ab is zero');
-            return
-        end
+       end
+    else
+        %caclutae g, h, d, e and f
+        b_rab=b/R_ab;
+        b_rab_1=1-b_rab^2;
+        g=((R_ac*b_rab)-cx)/cy;
+        h=(c^2-R_ac^2+(R_ac*R_ab*b_rab_1))/(2*cy);
+        d=-1*(b_rab_1+g^2);
+        e=(b*b_rab_1)-(2*g*h);
+        f=((R_ab^2/4)*(b_rab_1^2))-h^2;
+        %calculate x
+        p=[d e f-z_m^2];
+        x_mat=roots(p);
+        %calculayte y
+        y_mat=g*x_mat+h;
     end
-    %caclutae g, h, d, e and f
-    b_rab=b/R_ab;
-    b_rab_1=1-b_rab^2;
-    g=((R_ac*b_rab)-cx)/cy;
-    h=(c^2-R_ac^2+(R_ac*R_ab*b_rab_1))/(2*cy);
-    d=-1*(b_rab_1+g^2);
-    e=(b*b_rab_1)-(2*g*h);
-    f=((R_ab^2/4)*(b_rab_1^2))-h^2;
-    %calculate x
-    p=[d e f-z_m^2];
-    x_mat=roots(p);
-    %calculayte y
-    y_mat=g*x_mat+h;
     %check equs 1 and 2 are satisfied with x,y and z values
     for loop_var=1:3
         
@@ -81,6 +133,10 @@ function [x,y,z]=iA_pos_algo(depth,timestamp_matrix,station_data)
             break;
         end
         if (loop_var >= 2)
+            disp('No roots found');
+            sec_a;
+            sec_b;
+            sec_c;
             x=0;
             y=0;
             break;
