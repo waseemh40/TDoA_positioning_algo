@@ -27,7 +27,7 @@ function y=iA_pos_cacluations_top(tag_id,tbr_a,tbr_b,tbr_c,n_samples)
     z_avg=0;
     N_samples=n_samples;
     used_timestamps=0;
-    zero_cals=0;
+    zero_calcs=0;
         %outputs
     coord_matrix=zeros(N_samples,3);      %N rows 3 columns        
         % get each sample and apply positioning algorithm
@@ -69,7 +69,7 @@ function y=iA_pos_cacluations_top(tag_id,tbr_a,tbr_b,tbr_c,n_samples)
             [x_cal,y_cal,z_cal]=iA_pos_algo(z_avg,timestamp_matrix,station_data);
                 %debug code
             if (x_cal==0)|| (y_cal==0)
-                zero_cals=zero_cals+1;
+                zero_calcs=zero_calcs+1;
             end
                 %%%%%%%%%%%%%%
             coord_matrix(used_timestamps,:)=[x_cal,y_cal,z_cal]; 
@@ -77,18 +77,18 @@ function y=iA_pos_cacluations_top(tag_id,tbr_a,tbr_b,tbr_c,n_samples)
         end
     end
     used_timestamps
-    zero_cals
+    zero_calcs
     hold on
     for loop_var=1:N_samples   
         %plot(coord_matrix(loop_var,1),coord_matrix(loop_var,2),'*');
-        plot3(coord_matrix(loop_var,1),coord_matrix(loop_var,2),coord_matrix(loop_var,3),'*');
+        plot3(coord_matrix(loop_var,1),coord_matrix(loop_var,2),-1*coord_matrix(loop_var,3),'*');
     end
     grid on;
     xlabel('x-distance');
     ylabel('y-distance');
     zlabel('z-depth');
     fclose(file_id_read);
-    coord_matrix
+    coord_matrix;
 end
 function [timestamp_ret,millsec_ret,depth_ret]=find_timestamp_in_file(timestamp_ref,tbr_sn,tag_id)
     
