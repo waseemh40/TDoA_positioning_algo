@@ -97,14 +97,25 @@ disp('New iteration')
             x_mat(2,1)=b/2;     %equal roots
             z_m=depth;
             %solve for y
-            term=(R_ac^2-c^2+(2*cx*(b/2)));
+            term=(R_ac^2-c^2+(2*cx*(b/2)))/2;
             %make quadratric equation
-            a=(4*cy^2)-(4*R_ac^2);                  %y^2
-            b=(4*cy*term);                          %y
-            c=term^2-(4*R_ac^2*((b/2)^2+depth^2));  %const.
+            a=(cy^2)-(R_ac^2);                  %y^2
+            b=(2*cy*term);                          %y
+            c=(term^2)-(R_ac^2*((b/2)^2+depth^2));  %const.
             p=[a b c];
             y_mat=roots(p);
             disp('R_ab is zero');
+            x=x_mat(1,1)*100;
+            z=depth*100;
+
+            if  (isreal(y_mat(1,1))) && y_mat(1,1)>-1000
+                y=y_mat(1,1)
+            elseif (isreal(y_mat(2,1))) && y_mat(2,1)>-100
+                y=y_mat(2,1)
+            else
+            x=0;y=0;z=0;
+            end
+            return
        end
     else
         %caclutae g, h, d, e and f

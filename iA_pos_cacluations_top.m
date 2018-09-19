@@ -103,6 +103,8 @@ function y=iA_pos_cacluations_top(tag_id,tbr_a,tbr_b,tbr_c,n_samples)
     c = ax.FontSize;
     ax.FontSize = 12;
     ax.FontWeight= 'bold';
+            %cage
+    circle((2500-335.01),(2500-1250.11),2500);
         %error related
     coord_matrix=sortrows(coord_matrix,[-1 -2 -3])
     for loop_var=1:used_timestamps-zero_calcs
@@ -144,4 +146,12 @@ function [timestamp_ret,millsec_ret,depth_ret]=find_timestamp_in_file(timestamp_
         end
     end
     fclose(fid);
+end
+
+function h = circle(x,y,r)
+hold on
+th = 0:pi/50:2*pi;
+xunit = r * cos(th) + x;
+yunit = r * sin(th) + y;
+h = plot(xunit, yunit,'k');
 end
