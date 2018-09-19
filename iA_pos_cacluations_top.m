@@ -10,8 +10,10 @@ function y=iA_pos_cacluations_top(tag_id,tbr_a,tbr_b,tbr_c,n_samples)
     str = sprintf(formatSpec,tbr_c,tag_id);
     fid_c = fopen(str);
             %specs
+        %ref pos
+    ref_pos=[2149 1246 -300]; %(21.49,12.46,-3.00)
         %station data
-    b=41.54;                %b=43.301;
+    b=41.58;                %b=43.301;
     cx=21.19;                %cx=21.6498;
     cy=37.21;               %cy=37.4988;
     depth=3;                %depth=25;
@@ -84,11 +86,42 @@ function y=iA_pos_cacluations_top(tag_id,tbr_a,tbr_b,tbr_c,n_samples)
         plot3(coord_matrix(loop_var,1),coord_matrix(loop_var,2),-1*coord_matrix(loop_var,3),'*');
     end
     grid on;
-    xlabel('x-distance');
-    ylabel('y-distance');
-    zlabel('z-depth');
+    xlabel('x(cm)');
+    ylabel('y(cm)');
+    zlabel('depth(cm)');
+    zlim([-500 0])
     fclose(file_id_read);
-    coord_matrix;
+    hold on
+    plot3(0,0,-100*depth,'ok');
+    text(0,0,-100*depth,'Receiver_A','Color','blac','FontSize',14);
+    plot3(b*100,0,-100*depth,'ok');
+    text(b*100,0,-100*depth,'Receiver_B','Color','blac','FontSize',14);
+    plot3(cx*100,cy*100,-100*depth,'ok');
+    text(cx*100,cy*100,-100*depth,'Receiver_C','Color','blac','FontSize',14);
+    grid on
+    ax = gca;
+    c = ax.FontSize;
+    ax.FontSize = 12;
+    ax.FontWeight= 'bold';
+        %error related
+    coord_matrix=sortrows(coord_matrix,[-1 -2 -3])
+    for loop_var=1:used_timestamps-zero_calcs
+        error_matrix(loop_var,:)=coord_matrix(loop_var,:)-ref_pos;
+    end
+    figure
+    plot(error_matrix(:,1),'*');
+    hold on
+    plot(error_matrix(:,2),'o');
+    legend('x-error','y-error');
+    ylabel('Error(cm)','FontSize',12,'FontWeight','bold','Color','k')
+    xlabel('Samples','FontSize',12,'FontWeight','bold','Color','k')
+    grid on
+    ax = gca;
+    c = ax.FontSize;
+    ax.FontSize = 12;
+    ax.FontWeight= 'bold';
+   % ax.Color = 'blue';
+
 end
 function [timestamp_ret,millsec_ret,depth_ret]=find_timestamp_in_file(timestamp_ref,tbr_sn,tag_id)
     

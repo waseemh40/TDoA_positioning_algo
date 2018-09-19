@@ -83,11 +83,15 @@ function [x,y,z]=iA_pos_algo(depth,timestamp_matrix,station_data)
 disp('New iteration')
     if R_ab ==0
        if R_ac ==0
-            x=100*(b/2);
-            z=100*depth;
-            y=100*(-((cx*b)/(cy*2))+(c^2/(2*cy)));
+            x=(b/2);
+            z=depth;
+            y=(-((cx*b)/(cy*2))+(c^2/(2*cy)));
             disp('Both R_ab abd R_ac are zero');
-            return 
+            x_mat(1,1)=x;     %equal rooots
+            x_mat(2,1)=x;     %equal roots
+            y_mat(1,1)=y;     %equal rooots
+            y_mat(2,1)=y;     %equal roots
+            %return 
        else
             x_mat(1,1)=b/2;     %equal rooots
             x_mat(2,1)=b/2;     %equal roots
